@@ -126,22 +126,6 @@ class SpeedTest(threading.Thread):
         self.logger.log([ speedTestResults['date'].strftime('%Y-%m-%d %H:%M:%S'), str(speedTestResults['uploadResult']), str(speedTestResults['downloadResult']), str(speedTestResults['ping']) ])
 
 
-    def tweetResults(self, speedTestResults):
-        thresholdMessages = self.config['tweetThresholds']
-        message = None
-        for (threshold, messages) in thresholdMessages.items():
-            threshold = float(threshold)
-            if speedTestResults['downloadResult'] < threshold:
-                message = messages[random.randint(0, len(messages) - 1)].replace('{tweetTo}', self.config['tweetTo']).replace('{internetSpeed}', self.config['internetSpeed']).replace('{downloadResult}', str(speedTestResults['downloadResult']))
-
-        if message:
-            api = twitter.Api(consumer_key=self.config['twitter']['twitterConsumerKey'],
-                            consumer_secret=self.config['twitter']['twitterConsumerSecret'],
-                            access_token_key=self.config['twitter']['twitterToken'],
-                            access_token_secret=self.config['twitter']['twitterTokenSecret'])
-            if api:
-                status = api.PostUpdate(message)
-
 class DaemonApp():
     def __init__(self, pidFilePath, stdout_path='/dev/null', stderr_path='/dev/null'):
         self.stdin_path = '/dev/null'
